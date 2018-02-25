@@ -1,0 +1,82 @@
+﻿	<div class="section">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					<h2>Карточка вопроса</h2>
+					{% set questionEditId = '' %}
+					{% for row in rows %}
+						<form method="post" action="/question/editQuestion?questionId={{ row.id }}">
+							<div class="form-group">
+								<label>Дата</label>
+								<input type="datetime" name="question-edit-date" class="form-control" value="{{ row.date }}">
+							</div>
+							<div class="form-group">
+								<label>Имя пользователя</label>
+								<input type="text" name="question-edit-username" class="form-control" value="{{ row.username }}">
+							</div>
+							<div class="form-group">
+								<label>Электронная почта пользователя</label>
+								<input type="e-mail" name="question-edit-useremail" class="form-control" value="{{ row.useremail }}">
+							</div>
+							<div class="form-group">
+								<label>Тема вопроса</label>
+								<input type="text" name="question-edit-title" class="form-control" value="{{ row.title }}">
+								<input type="hidden" name="question-edit-id" class="form-control" value="{{ row.id }}">
+								{% set questionEditId = row.id %}
+							</div>
+							<div class="form-group">
+								<label>Текст вопроса</label>
+								<textarea class="form-control" name="question-edit-description" rows="5">{{ row.description }}</textarea>
+							</div>
+							<div class="form-group">
+								<label>Категория вопроса</label>
+								<select class="form-control" name="question-edit-category">
+									{% for category in listOfCategories %}
+										{% if category.name == row.category %}
+											<option value="{{ category.id }}">{{ category.name }}</option>
+										{% endif %}
+									{% endfor %}
+									{% for category in listOfCategories %}
+										{% if category.name != row.category %}
+											<option value="{{ category.id }}">{{ category.name }}</option>
+										{% endif %}
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Статус вопроса</label>
+								<select class="form-control" name="question-edit-status">
+									<option value="{{ row.status }}">{{ row.status }}</option>
+									{% for status in stasuses %}
+										{% if status != row.status %}
+											<option value="{{ status }}">{{ status }}</option>
+										{% endif %}
+									{% endfor %}
+								</select>
+							</div>
+							<div class="btn-group" role="group" aria-label="...">
+								<a class="btn btn-default" href="/question/dellQuestion?questionId={{ row.id }}" name="deleteQuestion">Удалить вопрос</a>
+								<button type="submit" class="btn btn-default" name="editQuestion">Внести изменения</button>
+							</div>
+						</form>
+					{% endfor %}
+				</div>
+				<div class="col-sm-6">
+					<h2>Ответить на вопрос</h2>
+					{% if message is not empty %}
+					<div class="alert alert-info" role="alert">{{ message }}</div>
+					{% endif %}
+					<form method="post" action="/answer/index">
+						<div class="form-group">
+							<label>Текст ответа</label>
+							<textarea class="form-control" name="answer-description" rows="5">{{ answerForQuestion[0]['description'] }}</textarea>
+							<input type="hidden" name="answer-question-id" class="form-control" value="{{ questionEditId }}">
+						</div>
+						<div class="btn-group" role="group" aria-label="...">
+							<button type="submit" class="btn btn-default" name="answer">Ответить</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>

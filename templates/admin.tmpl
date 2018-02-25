@@ -1,0 +1,140 @@
+﻿	<div class="section">
+		<div class="container">
+			<div class="row">
+				{% if message is not empty %}
+				<div class="alert alert-info" role="alert">{{ message }}</div>
+				{% endif %}
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs" role="tablist">
+					<li class="active"><a href="#administrators" aria-controls="administrators" role="tab" data-toggle="tab">Администраторы</a></li>
+					<li><a href="#categories" aria-controls="categories" role="tab" data-toggle="tab">Категории</a></li>
+					<li><a href="#questions" aria-controls="questions" role="tab" data-toggle="tab">Вопросы</a></li>
+				</ul>
+				<div class="col-md-12">
+					<div class="tab-content">
+						<div role="tabpanel" class="tab-pane active" id="administrators">
+							<h2>Администраторы</h2>
+							<table class="table">
+								<tr>
+									<th>#</th>
+									<th>Имя пользователя</th>
+									<th></th>
+								</tr>
+								{% for user in listOfUsers %}
+								<tr>
+									<td>{{ user.id }}</td>
+									<td>{{ user.login }}</td>
+									<td>
+										<span><a href="/user/changeAdminPass?action=change&id={{ user.id }}">Изменить пароль</a></span>
+										&nbsp;&nbsp;&nbsp;								
+										<span><a href="/user/delete?action=delete&id={{ user.id }}">Удалить администратора</a>
+									</td>
+								</tr>
+								{% endfor %}
+							</table>
+							<br/>
+							{% if action is not empty %}
+								<h4>Изменить пароль администратора</h4>
+							{% else %}
+								<h4>Создать нового администратора</h4>
+							{% endif %}
+							
+							<form class="form-inline" method="post" action="/user/createAdmin">
+								<div class="form-group">
+									<label>Имя пользователя</label>
+									<input type="text" class="form-control" name="new-admin-name" value="{% if action is defined and action == 'change' %}{{ change }}{% endif %}">
+									<input type="hidden" name="idForChanging" value="{% if action is defined and action == 'change' %} {{ idForChanging }}{% endif %}">
+								</div>
+								<div class="form-group">
+									<label>Пароль</label>
+									<input type="password" class="form-control" name="new-admin-password" placeholder="Пароль">
+								</div>
+								{% if action is not empty %}
+									<button type="submit" class="btn btn-default" name="new-admin-create">Изменить</button>
+								{% else %}
+									<button type="submit" class="btn btn-default" name="new-admin-create">Создать</button>
+								{% endif %}
+							</form>
+						</div>
+						<div role="tabpanel" class="tab-pane" id="categories">
+							<h2>Категории</h2>
+							<p>При удалении категории удаляются все вопросы. Восстановление невозможно.</p>
+							<table class="table">
+								<tr>
+									<th>#</th>
+									<th>Название категории</th>
+									<th>Всего вопросов</th>
+									<th>На модерации</th>
+									<th>Неопубликовано вопросов</th>
+									<th>Опубликовано вопросов</th>
+									<th></th>
+								</tr>
+								{% for category in listOfCategories %}
+								<tr>
+									<td>{{ category.id }}</td>
+									<td>{{ category.name }}</td>
+									<td>{{ category.rows }}</td>
+									<td>{{ category.pending }}</td>
+									<td>{{ category.nonpublish }}</td>
+									<td>{{ category.approved }}</td>
+									<td>
+										<span><a href="/category/deleteCategory?actionCategory=delete&id={{ category.id }}#categories">Удалить категорию</a>
+									</td>
+								</tr>
+								{% endfor %}
+							</table>
+							<h4>Создать новую категорию</h4>
+							<form class="form-inline" method="post" action="/category/createCategory?new-category-create=1#categories">
+								<div class="form-group">
+									<label>Название категории</label>
+									<input type="text" class="form-control" name="new-category-name">
+								</div>
+								<button type="submit" class="btn btn-default" name="new-category-create">Создать</button>
+							</form>
+						</div>
+						<div role="tabpanel" class="tab-pane" id="questions">
+							<h2>Вопросы</h2>
+							<form role="form" method="post" class="form-inline">
+								<div class="form-group">
+									<label>Категория</label>
+									<select class="form-control" name="categoryFilter">
+										{% for category in listOfCategories %}
+												<option value="{{ category.id }}">{{ category.name }}</option>
+										{% endfor %}
+									</select>
+									<button type="submit" class="btn btn-primary">Фильтр</button>
+								</div>
+							</form>
+							</br>
+							<table class="table">
+								<tr>
+									<th>#</th>
+									<th>Категория</th>
+									<th>Дата</th>
+									<th>Имя</th>
+									<th>Почта</th>
+									<th>Тема</th>
+									<th>Вопрос</th>
+									<th>Статус</th>
+									<th></th>
+								</tr>
+								{% for row in rows %}
+								<tr>
+									<td>{{ row.id }}</td>
+									<td>{{ row.category }}</td>
+									<td>{{ row.date }}</td>
+									<td>{{ row.username }}</td>
+									<td>{{ row.useremail }}</td>
+									<td>{{ row.title }}</td>
+									<td>{{ row.description }}</td>
+									<td>{{ row.status }}</td>
+									<td><a class="btn btn-default" href="/question/cardQuestion?questionId={{ row.id }}" role="button">Открыть вопрос</a></td>
+								</tr>
+								{% endfor %}
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>

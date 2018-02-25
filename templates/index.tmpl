@@ -1,0 +1,37 @@
+﻿	<div class="section">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<h1>Вопросы</h1>
+					<form role="form" method="post" class="form-inline">
+						<div class="form-group">
+							<label>Категория</label>
+							<select class="form-control" name="categoryFilter">
+								{% for category in listOfCategories %}
+										<option value="{{ category.id }}">{{ category.name }}</option>
+								{% endfor %}
+							</select>
+							<button type="submit" class="btn btn-primary">Фильтр</button>
+						</div>
+					</form>
+					<br/>
+					{% for row in rows %}
+					{% if row.status == 'Опубликован' %}
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">#{{ row.id }} ({{ row.category}}) {{ row.title }}</h3>
+						</div>
+						<div class="panel-body">
+							<p><b>Вопрос:</b> {{ row.description }}</p>
+							<p><b>Ответ:</b> {{ row.answer }}</p>
+						</div>
+						<div class="panel-footer">
+							Дата: {{ row.date }} | Пользователь: {{ row.username }} | Адрес: {{ row.useremail }}
+						</div>
+					</div>
+					{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
